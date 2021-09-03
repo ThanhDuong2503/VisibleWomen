@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -26,11 +27,7 @@ public class PinService {
 
     public Pin getPinById(String id) {
         Optional<Pin> optionalPin = pinMongoDb.findById(id);
-        if(optionalPin.isPresent()) {
-            return optionalPin.get();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pin with ID:" + id + "not found.");
-        }
+        return optionalPin.orElseThrow(() -> new NoSuchElementException("Pin with ID:" + id + "not found."));
     }
 
     public Pin addPin(Pin pinToAdd) {
